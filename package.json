@@ -12,27 +12,32 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ganeshkbhat/.git"
+    "url": "git+https://github.com/ganeshkbhat/which-type.git"
   },
   "bugs": {
-    "url": "https://github.com/ganeshkbhat//issues"
+    "url": "https://github.com/ganeshkbhat/which-type/issues"
   },
-  "homepage": "https://github.com/ganeshkbhat/#readme",
+  "homepage": "https://github.com/ganeshkbhat/which-type#readme",
   "scripts": {
-    "test": "mocha --reporter spec --recursive --timeout 60000"
+    "test": "mocha --reporter spec --recursive --timeout 60000",
+    "uglify": "uglifyjs --compress --mangle reserved=['$','require','exports'] index.js -o index.min.js",
+    "gitadd": "git add .",
+    "build": "tsc index.js --allowJs --emitDeclarationOnly --declaration --declarationMap --sourceMap"
   },
   "pre-commit": {
     "run": [
+      "uglify",
+      "build",
+      "gitadd",
       "test"
     ]
   },
   "keywords": [
-   
+    
   ],
   "devDependencies": {
     "@types/node": "^20.11.16",
     "chai": "^4.4.1",
-    "live-server": "^1.2.2",
     "mocha": "^10.2.0",
     "pre-commit": "^1.2.2",
     "pre-push": "^0.1.4",
