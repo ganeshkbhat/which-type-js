@@ -2,6 +2,7 @@
   "name": "which-type",
   "version": "1.0.0",
   "description": "determine which type of js is the object using which-type",
+  "main": "index.js",
   "exports": {
     "require": "./index.js",
     "import": "./index.mjs"
