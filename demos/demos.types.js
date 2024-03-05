@@ -30,7 +30,6 @@ const { TagTester,
   isSymbol,
   isFunction,
   isDataView,
-  hasDataViewBug,
   isValidDataView,
   isTagObject,
   isBufferLike } = require('../index');
