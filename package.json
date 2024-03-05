@@ -1,5 +1,5 @@
 {
-  "name": "which-type",
+  "name": "which-types",
   "version": "1.0.0",
   "description": "determine which type of js is the object using which-type",
   "main": "index.js",
