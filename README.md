@@ -8,7 +8,19 @@ determine which type of js is the object using which-type
 const { 
   TagTester,
   TypeTester,
-  isBufferLike 
+  isBufferLike ,
+  isString,
+  isNumber,
+  isBoolean,
+  isDate,
+  isArray,
+  isRegExp,
+  isError,
+  isSymbol,
+  isArrayBuffer,
+  isFunction,
+  isDataView,
+  isObjectTag
  } = require("which-type-js");
 
 
@@ -48,5 +60,24 @@ console.log("isArrayBuffer : ", true, TypeTester("ArrayBuffer")(new ArrayBuffer(
 console.log("isFunction : ", true, TypeTester("Function")(() => { }));
 console.log("isDataView : ", false, TypeTester("DataView")([]));
 console.log("hasObjectTag : ", true, TypeTester("Object")({ "sc": 10 }));
+
+
+console.log("isString: ", true, isString("tester"));
+console.log("isNumber : ", true, isNumber(1));
+console.log("isBoolean : ", true, isBoolean(true));
+console.log("isDate : ", false, isDate(Date.now()));
+console.log("isDate : ", true, isDate(new Date(Date.now())));
+console.log("isArray : ", true, isArray([1, 2, 3]));
+console.log("isRegExp : ", true, isRegExp(new RegExp(/^d/g)));
+console.log("isRegExp : ", true, isRegExp(/^d/));
+console.log("isError : ", false, isError(Error));
+console.log("isError : ", true, isError(new Error("Tester")));
+console.log("isSymbol : ", true, isSymbol(Symbol("Tester")));
+console.log("isArrayBuffer : ", false, isArrayBuffer([]));
+console.log("isArrayBuffer : ", false, isArrayBuffer(Buffer.from([])));
+console.log("isArrayBuffer : ", true, isArrayBuffer(new ArrayBuffer([])));
+console.log("isFunction : ", true, isFunction(() => { }));
+console.log("isDataView : ", false, isDataView([]));
+console.log("hasObjectTag : ", true, isObject({ "sc": 10 }));
 
 ```
