@@ -16,6 +16,7 @@
 
 
 let inbuilt = ["string", "number", "boolean", "null", "undefined", "bigint", "symbol", "set", "array", "object", "function"];
+
 let extendedtypes = [...inbuilt, "int", "float", "nan"];
 
 let typedefs = [...extendedtypes,
@@ -94,7 +95,7 @@ function TypeTester(name) {
 var isTagArrayBuffer = TagTester('ArrayBuffer');
 var isTagFunction = TagTester('Function');
 var isTagDataView = TagTester('DataView');
-var isTagObject = TagTester('Object');
+var hasObjectTag = TagTester('Object');
 var isTagUint16Array = TagTester('Uint16Array');
 var isTagUint32Array = TagTester('Uint32Array');
 var isTagUint8Array = TagTester('Uint8Array');
@@ -108,11 +109,17 @@ var isTagBigInt64Array = TagTester('BigInt64Array');
 var isTagBigUint64Array = TagTester('BigUint64Array');
 var isTagTypedArray = TagTester('TypedArray');
 var isTagSharedArrayBuffer = TagTester('SharedArrayBuffer');
-// var isValidDataView = (hasDataViewBug ? alternateIsDataView : isTagDataView);
 
+
+// var isIE11 = (typeof Map !== 'undefined' && hasObjectTag(new Map));
 var typedArrayPattern = /\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/;
 
 var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+
+var root = (typeof self == 'object' && self.self === self && self) ||
+    (typeof global == 'object' && global.global === global && global) ||
+    Function('return this')() ||
+    {}
 
 var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
     ObjProto = Object.prototype,
@@ -120,18 +127,18 @@ var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
     supportsDataView = () => typeof DataView !== 'undefined',
     nativeIsArrayBufferView = supportsArrayBuffer() && ArrayBuffer.isView;
 
-var nativeIsArray = Array.isArray,
-    nativeKeys = Object.keys,
-    nativeCreate = Object.create;
-
 var hasEnumBug = !{ toString: null }.propertyIsEnumerable('toString');
 var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
     'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
 
-// var hasDataViewBug = (
-//     supportsDataView() && (!/\[native code\]/.test(String(DataView)) || isTagObject(new DataView(new ArrayBuffer(8))))
-//     )
-    
+var nativeIsArray = Array.isArray,
+    nativeKeys = Object.keys,
+    nativeCreate = Object.create;
+
+// !/\[native code\]/.test(String(DataView)) ||
+// var hasDataViewBug = (supportsDataView() && hasObjectTag(new DataView(new ArrayBuffer(8))));
+// var isValidDataView = (hasDataViewBug ? alternateIsDataView : isTagDataView);
+
 if (!nativeIsArrayBufferView) {
     // add polyfill here
 }
@@ -165,6 +172,10 @@ function isTypedArray(obj) {
         ) : false;
 }
 
+function ie10IsDataView(obj) {
+    return obj != null && isFunction(obj.getInt8) && isTagArrayBuffer(obj.buffer);
+}
+
 function alternateIsDataView(obj) {
     return obj != null && isTagFunction(obj.getInt8) && isTagArrayBuffer(obj.buffer);
 }
@@ -191,11 +202,6 @@ function isBoolean(obj) {
     );
 }
 
-// Is a given value equal to null?
-function isTagNull(obj) {
-    return obj === null;
-}
-
 // null
 function isNull(obj) {
     return (
@@ -203,17 +209,18 @@ function isNull(obj) {
     );
 }
 
-// Is a given variable undefined?
-function isTagUndefined(obj) {
-    return obj === void 0;
-}
+// Is a given value equal to null?
+var isTagNull = isNull;
 
 // undefined
 function isUndefined(obj) {
     return (
-        (obj === undefined || typeof obj === "undefined") && (TypeTester('undefined')(obj) === '[object undefined]')
+        (obj === undefined || typeof obj === "undefined" || obj === void 0) && (TypeTester('undefined')(obj) === '[object undefined]')
     );
 }
+
+// Is a given variable undefined?
+var isTagUndefined = isUndefined;
 
 // BigInt
 function isBigInt(obj) {
@@ -251,91 +258,91 @@ function Uint16Array(obj) {
 // Uint32Array
 function Uint32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint32Array')(obj) === '[object Uint32Array]')
+        (!!Array.isArray(obj) || obj instanceof Uint32Array) && (TypeTester('Uint32Array')(obj) === '[object Uint32Array]')
     );
 }
 
 // Uint8Array
 function Uint8Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint8Array')(obj) === '[object Uint8Array]')
+        (!!Array.isArray(obj) || obj instanceof Uint8Array) && (TypeTester('Uint8Array')(obj) === '[object Uint8Array]')
     );
 }
 
 // Uint8ClampedArray
 function Uint8ClampedArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint8ClampedArray')(obj) === '[object Uint8ClampedArray]')
+        (!!Array.isArray(obj) || obj instanceof Uint8ClampedArray) && (TypeTester('Uint8ClampedArray')(obj) === '[object Uint8ClampedArray]')
     );
 }
 
 // Int16Array
 function Int16Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int16Array')(obj) === '[object Int16Array]')
+        (!!Array.isArray(obj) || obj instanceof Int16Array) && (TypeTester('Int16Array')(obj) === '[object Int16Array]')
     );
 }
 
 // Int32Array
 function Int32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int32Array')(obj) === '[object Int32Array]')
+        (!!Array.isArray(obj) || obj instanceof Int32Array) && (TypeTester('Int32Array')(obj) === '[object Int32Array]')
     );
 }
 
 // Int8Array
 function Int8Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int8Array')(obj) === '[object Int8Array]')
+        (!!Array.isArray(obj) || obj instanceof Int8Array) && (TypeTester('Int8Array')(obj) === '[object Int8Array]')
     );
 }
 
 // Float32Array
 function Float32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Float32Array')(obj) === '[object Float32Array]')
+        (!!Array.isArray(obj) || obj instanceof Float32Array) && (TypeTester('Float32Array')(obj) === '[object Float32Array]')
     );
 }
 
 // Float64Array
 function Float64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Float64Array')(obj) === '[object Float64Array]')
+        (!!Array.isArray(obj) || obj instanceof Float64Array) && (TypeTester('Float64Array')(obj) === '[object Float64Array]')
     );
 }
 
 // BigInt64Array
 function BigInt64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('BigInt64Array')(obj) === '[object BigInt64Array]')
+        (!!Array.isArray(obj) || obj instanceof BigInt64Array) && (TypeTester('BigInt64Array')(obj) === '[object BigInt64Array]')
     );
 }
 
 // BigUint64Array
 function BigUint64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('BigUint64Array')(obj) === '[object BigUint64Array]')
+        (!!Array.isArray(obj) || obj instanceof BigUint64Array) && (TypeTester('BigUint64Array')(obj) === '[object BigUint64Array]')
     );
 }
 
 // TypedArray - check all TypedArrays above
 function TypedArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('TypedArray')(obj) === '[object TypedArray]')
+        (!!Array.isArray(obj) || obj instanceof Array || isTypedArray(obj)) && (TypeTester('TypedArray')(obj) === '[object TypedArray]')
     );
 }
 
 // ArrayBuffer
 function ArrayBuffer(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('ArrayBuffer')(obj) === '[object ArrayBuffer]')
+        (!!Array.isArray(obj) || obj instanceof ArrayBuffer) && (TypeTester('ArrayBuffer')(obj) === '[object ArrayBuffer]')
     );
 }
 
 // SharedArrayBuffer
 function SharedArrayBuffer(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('SharedArrayBuffer')(obj) === '[object SharedArrayBuffer]')
+        (!!Array.isArray(obj) || obj instanceof SharedArrayBuffer) && (TypeTester('SharedArrayBuffer')(obj) === '[object SharedArrayBuffer]')
     );
 }
 
@@ -346,23 +353,13 @@ function isSet(obj) {
     );
 }
 
-
-// Is a given variable an object?
-function isTagObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || (type === 'object' && !!obj);
-}
-
-// Is a given variable an object?
-function isObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || (type === 'object' && !!obj);
-}
-
 // Object
 function isObject(obj) {
-    (obj instanceof Object || typeof obj === "object")
+    return (typeof obj === 'function' || obj instanceof Object || (typeof obj === "object" && !!obj))
 }
+
+// Is a given variable an object?
+var isTagObject = isObject;
 
 // Function
 function isFunction(obj) {
@@ -420,119 +417,121 @@ function isPromise(obj) {
     );
 }
 
-// decodeURI()
-function isDecodeURI(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // decodeURI()
+// function isDecodeURI(obj) {
+//     return (
+//         (typeof obj === "function"  || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// decodeURIComponent()
-function isDecodeURIComponent(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // decodeURIComponent()
+// function isDecodeURIComponent(obj) {
+//     return (
+//         (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// encodeURI()
-function isEncodeURI(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // encodeURI()
+// function isEncodeURI(obj) {
+//     return (
+//         (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// encodeURIComponent()
-function isEncodeURIComponent(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // encodeURIComponent()
+// function isEncodeURIComponent(obj) {
+//     return (
+//         (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// Deprecatedunescape()
-function isDeprecatedunescape(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // Deprecatedunescape()
+// function isDeprecatedunescape(obj) {
+//     return (
+//         (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// Deprecatedescape()
-function isDeprecatedescape(obj) {
-    return (
-        (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
-    );
-}
+// // Deprecatedescape()
+// function isDeprecatedescape(obj) {
+//     return (
+//         (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply))
+//     );
+// }
 
-// eval()
-function isEval(obj) {
-    return (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply));
-}
+// // eval()
+// function isEval(obj) {
+//     return (typeof obj === "function" || Boolean(obj && obj.constructor && obj.call && obj.apply));
+// }
 
 // Error
 function isError(obj) {
-    return (typeof obj === "object" || obj instanceof Error);
+    return (typeof obj === "object" && obj instanceof Error);
 }
 
 // EvalError
 function isEvalError(obj) {
-    return (typeof obj === "object" || obj instanceof EvalError);
+    return (typeof obj === "object" && obj instanceof EvalError);
 }
 
 // RangeError
 function isRangeError(obj) {
-    return (typeof obj === "object" || obj instanceof RangeError);
+    return (typeof obj === "object" && obj instanceof RangeError);
 }
 
 // ReferenceError
 function isReferenceError(obj) {
-    return (typeof obj === "object" || obj instanceof ReferenceError);
+    return (typeof obj === "object" && obj instanceof ReferenceError);
 }
 
 // SyntaxError
 function isSyntaxError(obj) {
-    return (typeof obj === "object" || obj instanceof SyntaxError);
+    return (typeof obj === "object" && obj instanceof SyntaxError);
 }
 
 // TypeError
 function isTypeError(obj) {
-    return (typeof obj === "object" || obj instanceof TypeError);
+    return (typeof obj === "object" && obj instanceof TypeError);
 }
 
 // URIError
 function isURIError(obj) {
-    return (typeof obj === "object" || obj instanceof URIError);
+    return (typeof obj === "object" && obj instanceof URIError);
 }
 
 // AggregateError
 function isAggregateError(obj) {
-    return (typeof obj === "object" || obj instanceof AggregateError);
+    return (typeof obj === "object" && obj instanceof AggregateError);
 }
 
 // Non-standardInternalError
-function isNonStandardInternalError(obj) { }
+function isNonStandardInternalError(obj) {
+    return (obj instanceof InternalError);
+}
 
 // Map
 function isMap(obj) {
-    return (typeof obj === "object" || obj instanceof Map);
+    return (typeof obj === "object" && obj instanceof Map);
 }
 
 // WeakMap
 function isWeakMap(obj) {
-    return (typeof obj === "object" || obj instanceof WeakMap);
+    return (typeof obj === "object" && obj instanceof WeakMap);
 }
 
 // WeakRef
 function isWeakRef(obj) {
-    // return (typeof obj === "object" || obj instanceof WeakRef);
+    return (typeof obj === "object" && obj instanceof WeakRef);
 }
 
 // WeakSet
 function isWeakSet(obj) {
-    return (typeof obj === "object" || obj instanceof WeakSet);
+    return (typeof obj === "object" && obj instanceof WeakSet);
 }
 
 // DataView
 function isDataView(obj) {
-    return (typeof obj === "object" || obj instanceof DataView);
+    return (typeof obj === "object" && obj instanceof DataView);
 }
 
 // Date
@@ -557,12 +556,12 @@ function isJSONMethod(obj) {
 
 // Proxy
 function isProxy(obj) {
-    return typeof obj === "object" || obj instanceof Proxy;
+    return typeof obj === "object" && obj instanceof Proxy;
 }
 
 // Reflect
 function isReflect(obj) {
-    return typeof obj === "object" || obj instanceof Reflect;
+    return typeof obj === "object" && obj instanceof Reflect;
 }
 
 // ReflectMethod
@@ -574,7 +573,7 @@ function isReflectMethod() {
 
 // RegExp
 function isRegExp(obj) {
-    return typeof obj === "object" || obj instanceof RegExp;
+    return typeof obj === "object" && obj instanceof RegExp;
 }
 
 // Intl
@@ -607,12 +606,12 @@ function isFloat(obj) {
 
 }
 
-// isNotNaN() notNaN()
+// isNotNaN() - notNaN()
 function notNaN(obj) {
     return !isNaN(obj);
 }
 
-// isNotNaN() notNaN()
+// isNotNaN() - notNaN()
 const isNotNaN = notNaN;
 
 // NaN
@@ -692,13 +691,13 @@ module.exports = {
     isAsyncGenerator,
     isAsyncGeneratorFunction,
     isPromise,
-    isDecodeURI,
-    isDecodeURIComponent,
-    isEncodeURI,
-    isEncodeURIComponent,
-    isDeprecatedunescape,
-    isDeprecatedescape,
-    isEval,
+    // isDecodeURI,
+    // isDecodeURIComponent,
+    // isEncodeURI,
+    // isEncodeURIComponent,
+    // isDeprecatedunescape,
+    // isDeprecatedescape,
+    // isEval,
     isError,
     isEvalError,
     isRangeError,
