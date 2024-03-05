@@ -42,25 +42,6 @@ var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
   supportsDataView = () => typeof DataView !== 'undefined',
   nativeIsArrayBufferView = supportsArrayBuffer() && ArrayBuffer.isView;
 
-// Is a given variable an object?
-function isObject(obj) {
-  var type = typeof obj;
-  return type === 'function' || (type === 'object' && !!obj);
-}
-
-// Is a given variable undefined?
-function isUndefined(obj) {
-  return obj === void 0;
-}
-
-// Boolean
-// Is a given value a boolean?
-function isBoolean(obj) {
-  return (
-      (obj instanceof Boolean || ((obj === true || obj === false) && typeof obj === "object")) && (tagTester('Boolean')(obj) === '[object Boolean]')
-  );
-}
-
 // Sample Usage for 
 var isArrayBuffer = tagTester('ArrayBuffer');
 var isFunction = tagTester('Function');
@@ -102,9 +83,6 @@ if (!isBrowser()) {
   
   module.exports = {
     tagTester,
-    isBoolean,
-    isObject,
-    isUndefined,
     isArrayBuffer,
     isFunction,
     isDataView,
@@ -116,9 +94,6 @@ if (!isBrowser()) {
 
   module.exports.default = {
     tagTester,
-    isBoolean,
-    isObject,
-    isUndefined,
     isArrayBuffer,
     isFunction,
     isDataView,

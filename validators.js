@@ -98,6 +98,12 @@ function isTagObject(obj) {
     return type === 'function' || (type === 'object' && !!obj);
 }
 
+// Is a given variable an object?
+function isObject(obj) {
+    var type = typeof obj;
+    return type === 'function' || (type === 'object' && !!obj);
+}
+
 // Is a given value equal to null?
 function isTagNull(obj) {
     return obj === null;
@@ -128,33 +134,35 @@ var isTagObject = tagTester('Object');
 var hasObjectTag = isTagObject;
 
 var isTagAlternateIsDataView = tagTester('DataView');
+var isDataView = tagTester('DataView');
+var hasObjectTag = tagTester('Object');
 
 function alternateIsDataView(obj) {
-    return (obj != null && isFunction$1(obj.getInt8) && isArrayBuffer(obj.buffer)) || (isTagAlternateIsDataView(obj) === "[Object DataView]");
+  return obj != null && isFunction$1(obj.getInt8) && isArrayBuffer(obj.buffer);
 }
 
 var hasDataViewBug = (
-    supportsDataView() && (!/\[native code\]/.test(String(DataView)) || hasObjectTag(new DataView(new ArrayBuffer(8))))
+  supportsDataView() && (!/\[native code\]/.test(String(DataView)) || hasObjectTag(new DataView(new ArrayBuffer(8))))
 )
 
 var isValidDataView = (hasDataViewBug ? alternateIsDataView : isDataView);
 
 function getShallowProperty(key) {
-    return function (obj) {
-        return obj == null ? void 0 : obj[key];
-    };
+  return function (obj) {
+    return obj == null ? void 0 : obj[key];
+  };
 }
 
 // Common internal logic for `isArrayLike` and `isBufferLike`.
 function createSizePropertyCheck(getSizeProperty) {
-    return function (collection) {
-        var sizeProperty = getSizeProperty(collection);
-        return (
-            typeof sizeProperty == 'number' &&
-            sizeProperty >= 0 &&
-            sizeProperty <= MAX_ARRAY_INDEX
-        );
-    };
+  return function (collection) {
+    var sizeProperty = getSizeProperty(collection);
+    return (
+      typeof sizeProperty == 'number' &&
+      sizeProperty >= 0 &&
+      sizeProperty <= MAX_ARRAY_INDEX
+    );
+  };
 }
 
 var getByteLength = getShallowProperty('byteLength');

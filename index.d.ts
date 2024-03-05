@@ -1,8 +1,5 @@
 declare namespace _default {
     export { tagTester };
-    export { isBoolean };
-    export { isObject };
-    export { isUndefined };
     export { isArrayBuffer };
     export { isFunction };
     export { isDataView };
@@ -13,9 +10,6 @@ declare namespace _default {
 }
 export default _default;
 export function tagTester(name: any): (obj: any) => boolean;
-export function isBoolean(obj: any): boolean;
-export function isObject(obj: any): boolean;
-export function isUndefined(obj: any): boolean;
 export function isArrayBuffer(obj: any): boolean;
 export function isFunction(obj: any): boolean;
 export function isDataView(obj: any): boolean;
