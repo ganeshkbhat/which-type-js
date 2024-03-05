@@ -79,12 +79,40 @@ function isBrowser() {
     if (typeof window === "object") { return true; }
 }
 
-function tagTester(name) {
+function TagTester(name) {
     var tag = '[object ' + name + ']';
     return function (obj) {
         return toString.call(obj) === tag;
     };
 }
+
+function TypeTester(name) {
+    return TagTester(name) || TagTester(name) === TagTester(Function("return " + name + ";")(name));
+}
+
+// Sample Usage for 
+var isTagArrayBuffer = TagTester('ArrayBuffer');
+var isTagFunction = TagTester('Function');
+var isTagDataView = TagTester('DataView');
+var isTagObject = TagTester('Object');
+var isTagUint16Array = TagTester('Uint16Array');
+var isTagUint32Array = TagTester('Uint32Array');
+var isTagUint8Array = TagTester('Uint8Array');
+var isTagUint8ClampedArray = TagTester('Uint8ClampedArray');
+var isTagInt16Array = TagTester('Int16Array');
+var isTagInt32Array = TagTester('Int32Array');
+var isTagInt8Array = TagTester('Int8Array');
+var isTagFloat32Array = TagTester('Float32Array');
+var isTagFloat64Array = TagTester('Float64Array');
+var isTagBigInt64Array = TagTester('BigInt64Array');
+var isTagBigUint64Array = TagTester('BigUint64Array');
+var isTagTypedArray = TagTester('TypedArray');
+var isTagSharedArrayBuffer = TagTester('SharedArrayBuffer');
+var isValidDataView = (hasDataViewBug ? alternateIsDataView : isTagDataView);
+
+var typedArrayPattern = /\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/;
+
+var MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
 
 var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
     ObjProto = Object.prototype,
@@ -92,82 +120,54 @@ var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
     supportsDataView = () => typeof DataView !== 'undefined',
     nativeIsArrayBufferView = supportsArrayBuffer() && ArrayBuffer.isView;
 
-// Is a given variable an object?
-function isTagObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || (type === 'object' && !!obj);
-}
+var nativeIsArray = Array.isArray,
+    nativeKeys = Object.keys,
+    nativeCreate = Object.create;
 
-// Is a given variable an object?
-function isObject(obj) {
-    var type = typeof obj;
-    return type === 'function' || (type === 'object' && !!obj);
-}
-
-// Is a given value equal to null?
-function isTagNull(obj) {
-    return obj === null;
-}
-
-// Is a given variable undefined?
-function isTagTagUndefined(obj) {
-    return obj === void 0;
-}
-
-// Is a given value a DOM element?
-function isTagElement(obj) {
-    return !!(obj && obj.nodeType === 1);
-}
-
-// Sample Usage for 
-
-var isTagString = tagTester('String');
-var isTagNumber = tagTester('Number');
-var isTagDate = tagTester('Date');
-var isTagRegExp = tagTester('RegExp');
-var isTagError = tagTester('Error');
-var isTagSymbol = tagTester('Symbol');
-var isTagArrayBuffer = tagTester('ArrayBuffer');
-var isTagFunction = tagTester('Function');
-var isTagDataView = tagTester('DataView');
-var isTagObject = tagTester('Object');
-var hasObjectTag = isTagObject;
-
-var isTagAlternateIsDataView = tagTester('DataView');
-var isDataView = tagTester('DataView');
-var hasObjectTag = tagTester('Object');
-
-function alternateIsDataView(obj) {
-  return obj != null && isFunction$1(obj.getInt8) && isArrayBuffer(obj.buffer);
-}
+var hasEnumBug = !{ toString: null }.propertyIsEnumerable('toString');
+var nonEnumerableProps = ['valueOf', 'isPrototypeOf', 'toString',
+    'propertyIsEnumerable', 'hasOwnProperty', 'toLocaleString'];
 
 var hasDataViewBug = (
-  supportsDataView() && (!/\[native code\]/.test(String(DataView)) || hasObjectTag(new DataView(new ArrayBuffer(8))))
+    supportsDataView() && (!/\[native code\]/.test(String(DataView)) || isTagObject(new DataView(new ArrayBuffer(8))))
 )
 
-var isValidDataView = (hasDataViewBug ? alternateIsDataView : isDataView);
+if (!nativeIsArrayBufferView) {
+    // add polyfill here
+}
 
 function getShallowProperty(key) {
-  return function (obj) {
-    return obj == null ? void 0 : obj[key];
-  };
+    return function (obj) {
+        return obj == null ? void 0 : obj[key];
+    };
 }
 
 // Common internal logic for `isArrayLike` and `isBufferLike`.
 function createSizePropertyCheck(getSizeProperty) {
-  return function (collection) {
-    var sizeProperty = getSizeProperty(collection);
-    return (
-      typeof sizeProperty == 'number' &&
-      sizeProperty >= 0 &&
-      sizeProperty <= MAX_ARRAY_INDEX
-    );
-  };
+    return function (collection) {
+        var sizeProperty = getSizeProperty(collection);
+        return (
+            typeof sizeProperty == 'number' &&
+            sizeProperty >= 0 &&
+            sizeProperty <= MAX_ARRAY_INDEX
+        );
+    };
 }
 
 var getByteLength = getShallowProperty('byteLength');
 var isBufferLike = createSizePropertyCheck(getByteLength);
 
+function isTypedArray(obj) {
+    return (supportsArrayBuffer) ?
+        (
+            nativeIsArrayBufferView ? (nativeIsArrayBufferView(obj) && !isTagDataView(obj)) :
+                isBufferLike(obj) && typedArrayPattern.test(toString.call(obj))
+        ) : false;
+}
+
+function alternateIsDataView(obj) {
+    return obj != null && isTagFunction(obj.getInt8) && isTagArrayBuffer(obj.buffer);
+}
 
 // String
 function isString(obj) {
@@ -179,7 +179,7 @@ function isString(obj) {
 // Number
 function isNumber(obj) {
     return (
-        (typeof obj === "number" || obj instanceof Number) && (isTagNumber(obj) === '[object Number]')
+        (typeof obj === "number" || obj instanceof Number) && (TypeTester(obj) === '[object Number]')
     );
 }
 
@@ -187,183 +187,156 @@ function isNumber(obj) {
 // Is a given value a boolean?
 function isBoolean(obj) {
     return (
-        (obj instanceof Boolean || ((obj === true || obj === false) && typeof obj === "object")) && (tagTester('Boolean')(obj) === '[object Boolean]')
+        (obj instanceof Boolean || ((obj === true || obj === false) && typeof obj === "object")) && (TypeTester('Boolean')(obj) === '[object Boolean]')
     );
+}
+
+
+// Is a given value equal to null?
+function isTagNull(obj) {
+    return obj === null;
 }
 
 // null
 function isNull(obj) {
     return (
-        (obj === null && typeof obj === "object") && (tagTester('Null')(obj) === '[object Null]')
+        (obj === null && typeof obj === "object") && (TypeTester('Null')(obj) === '[object Null]')
     );
+}
+
+// Is a given variable undefined?
+function isTagUndefined(obj) {
+    return obj === void 0;
 }
 
 // undefined
 function isUndefined(obj) {
     return (
-        (obj === undefined || typeof obj === "undefined") && (tagTester('undefined')(obj) === '[object undefined]')
+        (obj === undefined || typeof obj === "undefined") && (TypeTester('undefined')(obj) === '[object undefined]')
     );
 }
 
 // BigInt
 function isBigInt(obj) {
     return (
-        (typeof obj === "bigint") && (tagTester('BigInt')(obj) === '[object BigInt]')
+        (typeof obj === "bigint") && (TypeTester('BigInt')(obj) === '[object BigInt]')
     );
 }
 
 // Symbol
 function isSymbol(obj) {
     return (
-        (typeof obj === "symbol") && (tagTester('Symbol')(obj) === '[object Symbol]')
+        (typeof obj === "symbol") && (TypeTester('Symbol')(obj) === '[object Symbol]')
     );
 }
 
 // Array
 function isArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Array')(obj) === '[object Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Array')(obj) === '[object Array]')
     );
 }
 
-
-// Uint16Array
-var isTagUint16Array = tagTester('Uint16Array');
-
-// Uint32Array
-var isTagUint32Array = tagTester('Uint32Array');
-
-// Uint8Array
-var isTagUint8Array = tagTester('Uint8Array');
-
-// Uint8ClampedArray
-var isTagUint8ClampedArray = tagTester('Uint8ClampedArray');
-
-// Int16Array
-var isTagInt16Array = tagTester('Int16Array');
-
-// Int32Array
-var isTagInt32Array = tagTester('Int32Array');
-
-// Int8Array
-var isTagInt8Array = tagTester('Int8Array');
-
-// Float32Array
-var isTagFloat32Array = tagTester('Float32Array');
-
-// Float64Array
-var isTagFloat64Array = tagTester('Float64Array');
-
-// BigInt64Array
-var isTagBigInt64Array = tagTester('BigInt64Array');
-
-// BigUint64Array
-var isTagBigUint64Array = tagTester('BigUint64Array');
-
-// TypedArray - check all TypedArrays above
-var isTagTypedArray = tagTester('TypedArray');
-
-// ArrayBuffer
-var isTagArrayBuffer = tagTester('ArrayBuffer');
-
-// SharedArrayBuffer
-var isTagSharedArrayBuffer = tagTester('SharedArrayBuffer');
+// Is a given value a DOM element?
+function isTagElement(obj) {
+    return !!(obj && obj.nodeType === 1);
+}
 
 // Uint16Array
 function Uint16Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Uint16Array) && (tagTester('Uint16Array')(obj) === '[object Uint16Array]')
+        (!!Array.isArray(obj) || obj instanceof Uint16Array) && (TypeTester('Uint16Array')(obj) === '[object Uint16Array]')
     );
 }
 
 // Uint32Array
 function Uint32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Uint32Array')(obj) === '[object Uint32Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint32Array')(obj) === '[object Uint32Array]')
     );
 }
 
 // Uint8Array
 function Uint8Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Uint8Array')(obj) === '[object Uint8Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint8Array')(obj) === '[object Uint8Array]')
     );
 }
 
 // Uint8ClampedArray
 function Uint8ClampedArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Uint8ClampedArray')(obj) === '[object Uint8ClampedArray]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Uint8ClampedArray')(obj) === '[object Uint8ClampedArray]')
     );
 }
 
 // Int16Array
 function Int16Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Int16Array')(obj) === '[object Int16Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int16Array')(obj) === '[object Int16Array]')
     );
 }
 
 // Int32Array
 function Int32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Int32Array')(obj) === '[object Int32Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int32Array')(obj) === '[object Int32Array]')
     );
 }
 
 // Int8Array
 function Int8Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Int8Array')(obj) === '[object Int8Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Int8Array')(obj) === '[object Int8Array]')
     );
 }
 
 // Float32Array
 function Float32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Float32Array')(obj) === '[object Float32Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Float32Array')(obj) === '[object Float32Array]')
     );
 }
 
 // Float64Array
 function Float64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('Float64Array')(obj) === '[object Float64Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Float64Array')(obj) === '[object Float64Array]')
     );
 }
 
 // BigInt64Array
 function BigInt64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('BigInt64Array')(obj) === '[object BigInt64Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('BigInt64Array')(obj) === '[object BigInt64Array]')
     );
 }
 
 // BigUint64Array
 function BigUint64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('BigUint64Array')(obj) === '[object BigUint64Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('BigUint64Array')(obj) === '[object BigUint64Array]')
     );
 }
 
 // TypedArray - check all TypedArrays above
 function TypedArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('TypedArray')(obj) === '[object TypedArray]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('TypedArray')(obj) === '[object TypedArray]')
     );
 }
 
 // ArrayBuffer
 function ArrayBuffer(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('ArrayBuffer')(obj) === '[object ArrayBuffer]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('ArrayBuffer')(obj) === '[object ArrayBuffer]')
     );
 }
 
 // SharedArrayBuffer
 function SharedArrayBuffer(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (tagTester('SharedArrayBuffer')(obj) === '[object SharedArrayBuffer]')
+        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('SharedArrayBuffer')(obj) === '[object SharedArrayBuffer]')
     );
 }
 
@@ -372,6 +345,19 @@ function isSet(obj) {
     return (
         (Set.prototype.isPrototypeOf(obj) || obj instanceof Set)
     );
+}
+
+
+// Is a given variable an object?
+function isTagObject(obj) {
+    var type = typeof obj;
+    return type === 'function' || (type === 'object' && !!obj);
+}
+
+// Is a given variable an object?
+function isObject(obj) {
+    var type = typeof obj;
+    return type === 'function' || (type === 'object' && !!obj);
 }
 
 // Object
@@ -552,7 +538,7 @@ function isDataView(obj) {
 
 // Date
 function isDate(obj, dateFormat) {
-    return ((!isNaN(new Date(obj)) && obj.length === dateFormat.length) && ((tagTester("Date")(obj) === '[object Date]')));
+    return ((!isNaN(new Date(obj)) && obj.length === dateFormat.length) && ((TypeTester("Date")(obj) === '[object Date]')));
 }
 
 // Date

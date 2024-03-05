@@ -1,11 +1,11 @@
 /**
  * 
- * Package: 
+ * Package: which-type-object
  * Author: Ganesh B
  * Description: 
- * Install: npm i  --save
- * Github: https://github.com/ganeshkbhat/
- * npmjs Link: https://www.npmjs.com/package/
+ * Install: npm i which-type-object --save
+ * Github: https://github.com/ganeshkbhat/which-type-object
+ * npmjs Link: https://www.npmjs.com/package/which-type-object
  * File: 
  * File Description: 
  * 
@@ -21,6 +21,7 @@ const { TagTester,
   TypeTester,
   isBufferLike 
 } = require('../index');
+
 
 describe('[is typed array tests] index.js Tests to check the type of an object using TypeTester', () => {
   let tst, written;
@@ -79,7 +80,7 @@ describe('[is typed array tests] index.js Tests to check the type of an object u
     let expected = true;
 
     var isArray = TypeTester('Array');
-    expect(isArray([1,2,3])).to.equal(expected);
+    expect(isArray([1, 2, 3])).to.equal(expected);
   });
   it('should get Array type checker using TypeTester', () => {
     let actual = true;
@@ -121,7 +122,7 @@ describe('[is typed array tests] index.js Tests to check the type of an object u
     let expected = true;
 
     var isFunction = TypeTester('Function');
-    expect(isFunction(()=>{})).to.equal(expected);
+    expect(isFunction(() => { })).to.equal(expected);
   });
 
   it('should get DataView type checker using TypeTester', () => {
@@ -137,7 +138,7 @@ describe('[is typed array tests] index.js Tests to check the type of an object u
     let expected = true;
 
     var hasObjectTag = TypeTester('Object');
-    expect(hasObjectTag({"sc": 10 })).to.equal(expected);
+    expect(hasObjectTag({ "sc": 10 })).to.equal(expected);
   });
 
 });
