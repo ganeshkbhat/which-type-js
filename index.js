@@ -36,7 +36,6 @@ function tagTester(name) {
   };
 }
 
-
 var supportsArrayBuffer = () => typeof ArrayBuffer !== 'undefined',
   ObjProto = Object.prototype,
   toString = ObjProto.toString,
@@ -49,39 +48,24 @@ function isObject(obj) {
   return type === 'function' || (type === 'object' && !!obj);
 }
 
-// Is a given value equal to null?
-function isNull(obj) {
-  return obj === null;
-}
-
 // Is a given variable undefined?
 function isUndefined(obj) {
   return obj === void 0;
 }
 
+// Boolean
 // Is a given value a boolean?
 function isBoolean(obj) {
-  return obj === true || obj === false || toString.call(obj) === '[object Boolean]';
-}
-
-// Is a given value a DOM element?
-function isElement(obj) {
-  return !!(obj && obj.nodeType === 1);
+  return (
+      (obj instanceof Boolean || ((obj === true || obj === false) && typeof obj === "object")) && (tagTester('Boolean')(obj) === '[object Boolean]')
+  );
 }
 
 // Sample Usage for 
-
-var isString = tagTester('String');
-var isNumber = tagTester('Number');
-var isDate = tagTester('Date');
-var isRegExp = tagTester('RegExp');
-var isError = tagTester('Error');
-var isSymbol = tagTester('Symbol');
 var isArrayBuffer = tagTester('ArrayBuffer');
 var isFunction = tagTester('Function');
 var isDataView = tagTester('DataView');
 var hasObjectTag = tagTester('Object');
-
 
 function alternateIsDataView(obj) {
   return obj != null && isFunction$1(obj.getInt8) && isArrayBuffer(obj.buffer);
@@ -115,19 +99,12 @@ var getByteLength = getShallowProperty('byteLength');
 var isBufferLike = createSizePropertyCheck(getByteLength);
 
 if (!isBrowser()) {
+  
   module.exports = {
     tagTester,
     isBoolean,
     isObject,
-    isNull,
     isUndefined,
-    isElement,
-    isString,
-    isNumber,
-    isDate,
-    isRegExp,
-    isError,
-    isSymbol,
     isArrayBuffer,
     isFunction,
     isDataView,
@@ -141,15 +118,7 @@ if (!isBrowser()) {
     tagTester,
     isBoolean,
     isObject,
-    isNull,
     isUndefined,
-    isElement,
-    isString,
-    isNumber,
-    isDate,
-    isRegExp,
-    isError,
-    isSymbol,
     isArrayBuffer,
     isFunction,
     isDataView,
