@@ -9,7 +9,7 @@ const {
   TagTester,
   TypeTester,
   isBufferLike 
- } = require("which-typejs");
+ } = require("which-type-js");
 
 
 console.log("isString: ", true, TagTester("String")("tester"));
