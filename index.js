@@ -123,7 +123,6 @@ var isTagBigUint64Array = TagTester('BigUint64Array');
 var isTagTypedArray = TagTester('TypedArray');
 var isTagSharedArrayBuffer = TagTester('SharedArrayBuffer');
 
-
 // var isIE11 = (typeof Map !== 'undefined' && hasObjectTag(new Map));
 var typedArrayPattern = /\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\]/;
 
