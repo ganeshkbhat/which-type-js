@@ -25,6 +25,7 @@ declare namespace _default {
     export { SharedArrayBuffer };
     export { isSet };
     export { isObject };
+    export { isPureObject };
     export { isTagObject };
     export { isFunction };
     export { isAsyncFunction };
@@ -93,6 +94,7 @@ export function ArrayBuffer(obj: any): boolean;
 export function SharedArrayBuffer(obj: any): boolean;
 export function isSet(obj: any): boolean;
 export function isObject(obj: any): boolean;
+export function isPureObject(obj: any): boolean;
 export function isTagObject(obj: any): boolean;
 export function isFunction(obj: any): boolean;
 export function isAsyncFunction(obj: any): boolean;

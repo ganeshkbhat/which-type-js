@@ -251,7 +251,7 @@ function isSymbol(obj) {
 // Array
 function isArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array) && (TypeTester('Array')(obj) === '[object Array]')
+        (!!Array.isArray(obj) || obj instanceof Array) // && (TypeTester('Array')(obj) === '[object Array]')
     );
 }
 
@@ -368,6 +368,12 @@ function isSet(obj) {
 // Object
 function isObject(obj) {
     return (typeof obj === 'function' || obj instanceof Object || (typeof obj === "object" && !!obj))
+}
+
+// Object
+function isPureObject(obj) {
+    return (typeof obj === 'function' || obj instanceof Object || (typeof obj === "object" && !!obj)) &&
+        (!isArray(obj) || !TypedArray(obj))
 }
 
 // Is a given variable an object?
@@ -696,6 +702,7 @@ if (!isBrowser()) {
         SharedArrayBuffer,
         isSet,
         isObject,
+        isPureObject,
         isTagObject,
         isFunction,
         isAsyncFunction,
@@ -778,6 +785,7 @@ if (!isBrowser()) {
         SharedArrayBuffer,
         isSet,
         isObject,
+        isPureObject,
         isTagObject,
         isFunction,
         isAsyncFunction,

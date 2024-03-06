@@ -17,7 +17,10 @@
 'use strict';
 
 const { expect } = require('chai');
-
+const { TagTester,
+  TypeTester,
+  isBufferLike 
+} = require('../index');
 
 describe('[ tests] Tests to ', () => {
   let tst, written;
