@@ -340,7 +340,29 @@ function BigUint64Array(obj) {
 // TypedArray - check all TypedArrays above
 function TypedArray(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Array || isTypedArray(obj)) && (TypeTester('TypedArray')(obj) === '[object TypedArray]')
+        /* && (TypeTester('TypedArray')(obj) === '[object TypedArray]' */
+        (
+            (
+                (!!Array.isArray(obj) || obj instanceof Array)
+                &&
+                (isTypedArray(obj))
+                &&
+                (TypeTester('Object')(obj))
+            )
+            &&
+            !(
+                typeof obj === 'function' || isArray(obj) || isMap(obj) ||
+                isWeakSet(obj) || isSet(obj)
+            )
+        )
+        ||
+        (
+            isTagUint16Array(obj) || isTagUint32Array(obj) || isTagUint8Array(obj) ||
+            isTagUint8ClampedArray(obj) || isTagInt16Array(obj) || isTagInt32Array(obj) ||
+            isTagInt8Array(obj) || isTagFloat32Array(obj) || isTagFloat64Array(obj) ||
+            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagTypedArray(obj) ||
+            isTagSharedArrayBuffer(obj)
+        )
     );
 }
 
@@ -372,8 +394,14 @@ function isObject(obj) {
 
 // Object
 function isPureObject(obj) {
-    return (typeof obj === 'function' || obj instanceof Object || (typeof obj === "object" && !!obj)) &&
-        (!isArray(obj) || !TypedArray(obj))
+    return (obj instanceof Object || (typeof obj === "object" && !!obj)) &&
+        !(typeof obj === 'function' || isArray(obj) || isMap(obj) || isWeakSet(obj) || isSet(obj) ||
+            isTagUint16Array(obj) || isTagUint32Array(obj) || isTagUint8Array(obj) ||
+            isTagUint8ClampedArray(obj) || isTagInt16Array(obj) || isTagInt32Array(obj) ||
+            isTagInt8Array(obj) || isTagFloat32Array(obj) || isTagFloat64Array(obj) ||
+            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagTypedArray(obj) ||
+            isTagSharedArrayBuffer(obj)
+        )
 }
 
 // Is a given variable an object?

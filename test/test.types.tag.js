@@ -23,7 +23,7 @@ const { TagTester,
 } = require('../index');
 
 
-describe('[is typed array tests] index.js Tests to check the type of an object using TagTester', () => {
+describe('[TagTester usage tests] index.js Tests to check the type of an object using TagTester', () => {
   let tst, written;
   before(() => {
 

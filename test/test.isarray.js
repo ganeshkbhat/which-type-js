@@ -24,7 +24,7 @@ const { TagTester,
 } = require('../index');
 
 
-describe('[isArray tests] Tests to ', () => {
+describe('[isArray tests] Tests to check if isArray is functioning with most types', () => {
   let tst, written;
   before(() => {
 
@@ -177,13 +177,13 @@ describe('[isArray tests] Tests to ', () => {
   });
 
   it('should not be an array when an float using float Float32Array constructor type is checked', () => {
-    let actual = isArray(Float32Array.from(879305409549054.554));
+    let actual = isArray(new Float32Array(2));
     let expected = false;
     expect(actual).to.equal(expected);
   });
 
   it('should not be an array when an float using float Float32Array constructor type is checked', () => {
-    let actual = isArray(Float32Array.from('7654312456754'));
+    let actual = isArray(new Float32Array([2, 32]));
     let expected = false;
     expect(actual).to.equal(expected);
   });

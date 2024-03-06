@@ -19,10 +19,11 @@
 const { expect } = require('chai');
 const { TagTester,
   TypeTester,
-  isBufferLike 
+  isBufferLike,
+  isRefs 
 } = require('../index');
 
-describe('[ tests] Tests to ', () => {
+describe('[isRefs tests] Tests to check if isRefs is functioning with most types', () => {
   let tst, written;
   before(() => {
     

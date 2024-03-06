@@ -19,11 +19,35 @@
 const { expect } = require('chai');
 const { TagTester,
   TypeTester,
-  isBufferLike 
+  isBufferLike,
+  TypedArray,
+  isTypedArray 
 } = require('../index');
 
 
-describe('[ tests] Tests to ', () => {
+describe('[isTypedArray tests] Tests to check if isTypedArray is functioning with most types', () => {
+  let tst, written;
+  before(() => {
+    
+  });
+
+  after(() => { });
+
+  it('should ', () => {
+    let actual = true;
+    let expected = true;
+    expect(actual).to.equal(expected);
+  });
+
+  it('should ', () => {
+    let actual = true;
+    let expected = true;
+    expect(actual).to.equal(expected);
+  });
+
+});
+
+describe('[TypedArray tests] Tests to check if TypedArray is functioning with most types', () => {
   let tst, written;
   before(() => {
     

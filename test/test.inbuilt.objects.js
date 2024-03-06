@@ -21,11 +21,12 @@ const { TagTester,
   TypeTester,
   isBufferLike,
   isObject,
+  isPureObject,
   isTagObject
 } = require('../index');
 
 
-describe('[isObject tests] Tests to ', () => {
+describe('[isObject tests] Tests to check if isObject is functioning with most types', () => {
   let tst, written;
   before(() => {
 
@@ -204,7 +205,7 @@ describe('[isObject tests] Tests to ', () => {
 });
 
 
-describe('[isTagObject tests] Tests to ', () => {
+describe('[isTagObject tests] Tests to check if isTagObject is functioning with most types', () => {
   let tst, written;
   before(() => {
 
@@ -381,3 +382,4 @@ describe('[isTagObject tests] Tests to ', () => {
   });
 
 });
+
