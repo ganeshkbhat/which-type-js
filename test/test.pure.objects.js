@@ -23,6 +23,31 @@ const { TagTester,
   isPureObject
 } = require('../index');
 
+// null
+// undefined
+// NaN
+// string
+// number
+// float
+// array
+// typed array
+// function
+// object
+// all above with above constructors 
+// error
+// BufferView
+// DataView
+// isTypedArray,
+// isBufferLike,
+// supportsArrayBuffer,
+// toString,
+// supportsDataView,
+// nativeIsArrayBufferView,
+// isTypedArrayUsingPattern,
+// toBufferView,
+// getShallowProperty,
+// TypeTester
+
 
 describe('[isPureObject tests] Tests to ', () => {
   let tst, written;

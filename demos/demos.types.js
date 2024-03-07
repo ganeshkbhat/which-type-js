@@ -16,7 +16,8 @@
 'use strict';
 
 const { TypeTester } = require('../index');
-const { TagTester,
+const {
+  TagTester,
   isBoolean,
   isObject,
   isNull,
@@ -32,8 +33,34 @@ const { TagTester,
   isDataView,
   isValidDataView,
   isTagObject,
-  isBufferLike } = require('../index');
+  isBufferLike
+} = require('../index');
 
+
+// null
+// undefined
+// NaN
+// string
+// number
+// float
+// array
+// typed array
+// function
+// object
+// all above with above constructors 
+// error
+// BufferView
+// DataView
+// isTypedArray,
+// isBufferLike,
+// supportsArrayBuffer,
+// toString,
+// supportsDataView,
+// nativeIsArrayBufferView,
+// isTypedArrayUsingPattern,
+// toBufferView,
+// getShallowProperty,
+// TypeTester
 
 console.log("isString: ", true, isString("tester"))
 console.log("isNumber : ", true, isNumber(1))

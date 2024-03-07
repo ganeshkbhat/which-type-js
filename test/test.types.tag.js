@@ -22,6 +22,30 @@ const { TagTester,
   isBufferLike 
 } = require('../index');
 
+// null
+// undefined
+// NaN
+// string
+// number
+// float
+// array
+// typed array
+// function
+// object
+// all above with above constructors 
+// error
+// BufferView
+// DataView
+// isTypedArray,
+// isBufferLike,
+// supportsArrayBuffer,
+// toString,
+// supportsDataView,
+// nativeIsArrayBufferView,
+// isTypedArrayUsingPattern,
+// toBufferView,
+// getShallowProperty,
+// TypeTester
 
 describe('[TagTester usage tests] index.js Tests to check the type of an object using TagTester', () => {
   let tst, written;
@@ -30,17 +54,6 @@ describe('[TagTester usage tests] index.js Tests to check the type of an object 
   });
 
   after(() => { });
-
-  // isTypedArray,
-  // isBufferLike,
-  // supportsArrayBuffer,
-  // toString,
-  // supportsDataView,
-  // nativeIsArrayBufferView,
-  // isTypedArrayUsingPattern,
-  // toBufferView,
-  // getShallowProperty,
-  // TagTester
 
   it('should get String type checker using TagTester', () => {
     let actual = true;

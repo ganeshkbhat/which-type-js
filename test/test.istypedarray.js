@@ -24,6 +24,30 @@ const { TagTester,
   isTypedArray 
 } = require('../index');
 
+// null
+// undefined
+// NaN
+// string
+// number
+// float
+// array
+// typed array
+// function
+// object
+// all above with above constructors 
+// error
+// BufferView
+// DataView
+// isTypedArray,
+// isBufferLike,
+// supportsArrayBuffer,
+// toString,
+// supportsDataView,
+// nativeIsArrayBufferView,
+// isTypedArrayUsingPattern,
+// toBufferView,
+// getShallowProperty,
+// TypeTester
 
 describe('[isTypedArray tests] Tests to check if isTypedArray is functioning with most types', () => {
   let tst, written;

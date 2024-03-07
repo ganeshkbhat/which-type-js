@@ -23,6 +23,32 @@ const { TagTester,
   isBoolean
 } = require('../index');
 
+
+// null
+// undefined
+// NaN
+// string
+// number
+// float
+// array
+// typed array
+// function
+// object
+// all above with above constructors 
+// error
+// BufferView
+// DataView
+// isTypedArray,
+// isBufferLike,
+// supportsArrayBuffer,
+// toString,
+// supportsDataView,
+// nativeIsArrayBufferView,
+// isTypedArrayUsingPattern,
+// toBufferView,
+// getShallowProperty,
+// TypeTester
+
 describe('[isBoolean tests] Tests to check if isBoolean is functioning with most types', () => {
   let tst, written;
   before(() => {
