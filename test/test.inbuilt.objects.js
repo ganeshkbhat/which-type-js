@@ -25,7 +25,6 @@ const { TagTester,
   isTagObject
 } = require('../index');
 
-
 // all below with above constructors 
 
 // // null
@@ -178,6 +177,12 @@ const { TagTester,
 // Float64Array.from(32)
 // Float64Array.from('7654312456754')
 
+
+// RegExp
+// Date
+// Math
+
+
 // // function
 // () => {}
 // function() => {}
@@ -190,23 +195,25 @@ const { TagTester,
 // Object.create({})
 
 // // error
-// Error
-// EvalError
-// TypeError
-// MediaError
-// RangeError
-// SyntaxError
-// ReferenceError
-// AssertionError
-// WebTransportError
-// OverconstrainedError
-// SpeechSynthesisErrorEvent
-// GeolocationPositionError
-// RTCPeerConnectionIceErrorEvent
-// RTCPeerConnectionIceErrorEvent
+// new Error("")
+// new EvalError("")
+// new TypeError("")
+// new MediaError("")
+// new RangeError("")
+// new SyntaxError("")
+// new ReferenceError("")
+// new AssertionError("")
+// new WebTransportError("")
+// new OverconstrainedError("")
+// new SpeechSynthesisErrorEvent("")
+// new GeolocationPositionError("")
+// new RTCPeerConnectionIceErrorEvent("")
+// new RTCPeerConnectionIceErrorEvent("")
 
 // // BufferView
-// ArrayBuffer
+// ArrayBuffer.from()
+// ArrayBuffer([])
+// ArrayBuffer([8934, 8945, 65])
 
 // // DataView
 // DataView
