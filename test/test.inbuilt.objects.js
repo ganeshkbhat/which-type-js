@@ -25,6 +25,36 @@ const { TagTester,
   isTagObject
 } = require('../index');
 
+// isBufferLike(12)
+// isBufferLike("23")
+// isBufferLike("23Test")
+// isBufferLike(NaN)
+// isBufferLike(undefined)
+// isBufferLike(true)
+// isBufferLike(false)
+// isBufferLike(`test`)
+// isBufferLike([1, 2, 3, 4])
+// isBufferLike([1.2, 4, 6, 10])
+// isBufferLike({})
+// isBufferLike({ test: 10 })
+// isBufferLike(new Set())
+// isBufferLike(new Set([]))
+// isBufferLike(new Set([1, 2, 3]))
+// isBufferLike(() => 1)
+// isBufferLike((s) => s)
+// isBufferLike(() => { })
+// isBufferLike(function () { })
+// isBufferLike(function test() { })
+// isBufferLike(new ArrayBuffer(10))
+// isBufferLike(new ArrayBuffer([]))
+// isBufferLike(new ArrayBuffer(new Int16Array(6)))
+// isBufferLike(new ArrayBuffer(new Uint32Array(6)))
+// isBufferLike(new ArrayBuffer(new BigInt64Array(6)))
+// isBufferLike(new ArrayBuffer(new BigUint64Array(6)))
+// isBufferLike(new ArrayBuffer(new Float32Array(6)))
+// isBufferLike(new ArrayBuffer("test"))
+// isBufferLike(new ArrayBuffer(""))
+
 // all below with above constructors 
 
 // // null
