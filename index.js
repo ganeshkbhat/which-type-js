@@ -120,7 +120,6 @@ var isTagFloat32Array = TagTester('Float32Array');
 var isTagFloat64Array = TagTester('Float64Array');
 var isTagBigInt64Array = TagTester('BigInt64Array');
 var isTagBigUint64Array = TagTester('BigUint64Array');
-var isTagTypedArray = TagTester('TypedArray');
 var isTagSharedArrayBuffer = TagTester('SharedArrayBuffer');
 
 // var isIE11 = (typeof Map !== 'undefined' && hasObjectTag(new Map));
@@ -312,14 +311,14 @@ function Int8Array(obj) {
 // Float32Array
 function Float32Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Float32Array) && (TypeTester('Float32Array')(obj) === '[object Float32Array]')
+        (!!Array.isArray(obj) || obj instanceof Float32Array) && (TypeTester('Object')(obj) === '[object Object]')
     );
 }
 
 // Float64Array
 function Float64Array(obj) {
     return (
-        (!!Array.isArray(obj) || obj instanceof Float64Array) && (TypeTester('Float64Array')(obj) === '[object Float64Array]')
+        (!!Array.isArray(obj) || obj instanceof Float64Array) && (TypeTester('Object')(obj) === '[object Object]')
     );
 }
 
@@ -355,13 +354,49 @@ function TypedArray(obj) {
                 isWeakSet(obj) || isSet(obj)
             )
         )
-        ||
+        &&
         (
             isTagUint16Array(obj) || isTagUint32Array(obj) || isTagUint8Array(obj) ||
             isTagUint8ClampedArray(obj) || isTagInt16Array(obj) || isTagInt32Array(obj) ||
             isTagInt8Array(obj) || isTagFloat32Array(obj) || isTagFloat64Array(obj) ||
-            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagTypedArray(obj) ||
-            isTagSharedArrayBuffer(obj)
+            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagSharedArrayBuffer(obj)
+        )
+    );
+}
+
+// TypedArray - check all TypedArrays above
+function TypedNumberArray(obj) {
+    return (
+        /* && (TypeTester('TypedArray')(obj) === '[object TypedArray]' */
+        (
+            (!!Array.isArray(obj) || obj instanceof Array)
+            &&
+            (isTypedArray(obj))
+            &&
+            (TypeTester('Object')(obj))
+        )
+        &&
+        (
+            isTagUint16Array(obj) || isTagUint32Array(obj) || isTagUint8Array(obj) ||
+            isTagUint8ClampedArray(obj) || isTagInt16Array(obj) || isTagInt32Array(obj) ||
+            isTagInt8Array(obj) || isTagBigInt64Array(obj) || isTagBigUint64Array(obj)
+        )
+    );
+}
+
+// TypedArray - check all TypedArrays above
+function TypedFloatArray(obj) {
+    return (
+        (
+            (!!Array.isArray(obj) || obj instanceof Array)
+            &&
+            (isTypedArray(obj))
+            &&
+            (TypeTester('Object')(obj))
+        )
+        &&
+        (
+            isTagFloat32Array(obj) || isTagFloat64Array(obj) || hasObjectTag(obj)
         )
     );
 }
@@ -399,8 +434,8 @@ function isPureObject(obj) {
             isTagUint16Array(obj) || isTagUint32Array(obj) || isTagUint8Array(obj) ||
             isTagUint8ClampedArray(obj) || isTagInt16Array(obj) || isTagInt32Array(obj) ||
             isTagInt8Array(obj) || isTagFloat32Array(obj) || isTagFloat64Array(obj) ||
-            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagTypedArray(obj) ||
-            isTagSharedArrayBuffer(obj)
+            isTagBigInt64Array(obj) || isTagBigUint64Array(obj) || isTagSharedArrayBuffer(obj) || 
+            isTypedArray(obj)
         )
 }
 
@@ -809,6 +844,8 @@ if (!isBrowser()) {
         BigInt64Array,
         BigUint64Array,
         TypedArray,
+        TypedNumberArray,
+        TypedFloatArray,
         ArrayBuffer,
         SharedArrayBuffer,
         isSet,

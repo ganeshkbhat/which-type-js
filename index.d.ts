@@ -21,6 +21,8 @@ declare namespace _default {
     export { BigInt64Array };
     export { BigUint64Array };
     export { TypedArray };
+    export { TypedNumberArray };
+    export { TypedFloatArray };
     export { ArrayBuffer };
     export { SharedArrayBuffer };
     export { isSet };
@@ -135,4 +137,6 @@ export function isType(obj: any, typeStringName: any): boolean;
 export let inbuilt: string[];
 export let extendedtypes: string[];
 export let typedefs: string[];
+declare function TypedNumberArray(obj: any): boolean;
+declare function TypedFloatArray(obj: any): boolean;
 //# sourceMappingURL=index.d.ts.map
