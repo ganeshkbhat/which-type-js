@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[issharedbuffer tests] Tests to check if issharedbuffer is functioning with most types', () => {
   let tst, written;
   before(() => {
     

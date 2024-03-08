@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[istypednumberrray tests] Tests to check if istypednumberarray is functioning with most types', () => {
   let tst, written;
   before(() => {
     

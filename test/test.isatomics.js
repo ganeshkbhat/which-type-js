@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[isatomics tests] Tests to check if isatomics is functioning with most types', () => {
   let tst, written;
   before(() => {
     

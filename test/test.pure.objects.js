@@ -226,7 +226,7 @@ const { TagTester,
 // supportsDataView,
 // nativeIsArrayBufferView,
 
-describe('[isPureObject tests] Tests to ', () => {
+describe('[isPureObject tests] Tests to check if an object is a pure {} is functioning with most types', () => {
   let tst, written;
   before(() => {
 

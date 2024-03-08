@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[isdataview tests] Tests to check if isdataview is functioning with most types', () => {
   let tst, written;
   before(() => {
     

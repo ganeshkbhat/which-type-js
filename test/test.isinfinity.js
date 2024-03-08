@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[isinfinity tests] Tests to check if isinfinity is functioning with most types', () => {
   let tst, written;
   before(() => {
     

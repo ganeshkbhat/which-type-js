@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[isfloat tests] Tests to check if an object is a float', () => {
   let tst, written;
   before(() => {
     

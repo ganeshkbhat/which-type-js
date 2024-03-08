@@ -19,7 +19,7 @@
 const { expect } = require('chai');
 
 
-describe('[request tests] Tests to ', () => {
+describe('[inbuilt types tests] Tests to check for inbuilt types, extended types and inbuilt classed, and most typedefs', () => {
   let tst, written;
   before(() => {
     

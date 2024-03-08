@@ -227,7 +227,7 @@ const { TagTester,
 // supportsDataView,
 // nativeIsArrayBufferView,
 
-describe('[isNull tests] Tests to check if isNull is functioning with most types', () => {
+describe('[isNull isUndefined tests] Tests to check if isNull and isUndefined is functioning with most types', () => {
   let tst, written;
   before(() => {
     
